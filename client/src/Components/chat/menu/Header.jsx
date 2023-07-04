@@ -4,9 +4,11 @@ import {Box,styled} from '@mui/material'
 import MessageIcon from '@mui/icons-material/Message';
 import { HeaderMenu } from './HeaderMenu';
 import { InfoDrawer } from '../../account/drawer/InfoDrawer';
+import { useSelector } from 'react-redux';
 export const Header = () => {
     const [openDrawer,setOpenDrawer]=useState(false)
-    const account=useContext(AccountContext)
+    const data=useSelector((state)=>state.userReducer.user)
+    console.log("data",data)
 
     const toggleDrawer=()=>{
         setOpenDrawer(true)
@@ -37,11 +39,11 @@ export const Header = () => {
         width:40,
         borderRadius:'50%'
     })
-    console.log(account.account.picture)
+    console.log("datapicture",data)
   return (
    <>
     <Box style={BoxComponent}>
-        <ImageStyle src={account.account.picture} alt="dp" onClick={()=>toggleDrawer()} />
+        <ImageStyle src={data.picture} alt="dp" onClick={()=>toggleDrawer()} />
         <WraperStyle >
             <MessageIcon />
            <HeaderMenu 

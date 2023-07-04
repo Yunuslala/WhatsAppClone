@@ -3,8 +3,13 @@ import { LoginDialog } from './account/LoginDialog'
 import {AppBar,Toolbar,Box} from '@mui/material';
 import AccountProvider, { AccountContext } from './context/AccountProvider';
 import { ChatDialogs } from './chat/ChatDialogs';
+import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux/es/hooks/useSelector';
 
 export const Message = () => {
+  console.log("data")
+  const data=useSelector((state)=>state.userReducer.user)
+  console.log("data",data)
   const header = { height:'200px',
   backgroundColor:'#00bfa5',
 }
@@ -22,11 +27,10 @@ backgroundColor:"#DCDCDC"
 return (
 <Box style={component}>
 {
-  account ? 
+  data ? 
   <>
   <AppBar style={loginHeader}>
     <Toolbar>
-
     </Toolbar>
   </AppBar>
   <ChatDialogs />

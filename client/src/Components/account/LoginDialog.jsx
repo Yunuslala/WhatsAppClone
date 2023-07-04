@@ -4,14 +4,25 @@ import { qrCodeImage } from '../constants/data';
 import { GoogleLogin } from '@react-oauth/google';
 import jwt_decoded from 'jwt-decode'
 import { AccountContext } from '../context/AccountProvider';
+import {PostUsers } from "../Redux/authAction"
+import { useDispatch, useSelector } from 'react-redux';
 export const LoginDialog = () => {
   const {setAccount}=useContext(AccountContext)
-
+const dispatch=useDispatch()
   const loginSucess=(res)=>{
     const decoded=jwt_decoded(res.credential);
     console.log(decoded)
-    setAccount(decoded)
+    let obj={
+      "name":decoded.name,
+      "email":decoded.email,
+      "picture":decoded.picture,
+      "About":"Hey there i am using Whatsapp"
+    }
+    dispatch(PostUsers(obj))
+    console.log("user",obj)
+    // setAccount(decoded)
   }
+
   const LoginError=(res)=>{
     console.log('login failed',res)
   }

@@ -1,9 +1,11 @@
 import React, { useContext } from 'react'
 import {Box,Typography,styled} from '@mui/material'
 import { AccountContext } from '../../context/AccountProvider'
+import { useSelector } from 'react-redux';
 export const Profile = () => {
     const {account}=useContext(AccountContext)
-
+    const data=useSelector((state)=>state.userReducer.user)
+    console.log("data",data)
     const ImageContainer=styled(Box)`
     display:flex;
     justify-content:center;
@@ -54,18 +56,18 @@ export const Profile = () => {
   return (
     <>
         <ImageContainer>
-            <ImageStyle src={account.picture} alt="dp"/>
+            <ImageStyle src={data.picture} alt="dp"/>
         </ImageContainer>
         <BoxWrapperStyle>
             <Typography>Your name</Typography>
-            <Typography>{account.name}</Typography>
+            <Typography>{data.name}</Typography>
         </BoxWrapperStyle>
         <DescriptionContainer>
             <Typography>This is not your username or pin. This name will be visible to your WhatsApp contacts.</Typography>
         </DescriptionContainer>
         <AboutContainer>
             <Typography>About</Typography>
-            <Typography>Valhalla is Calling me</Typography>
+            <Typography>{data.About}</Typography>
         </AboutContainer>
     </>
   )
