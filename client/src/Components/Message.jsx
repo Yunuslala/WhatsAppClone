@@ -18,7 +18,7 @@ const loginHeader={
   height:'125px',
 backgroundColor:'#00bfa5',
 }
-const {account}=useContext(AccountContext)
+
 
 const component= {
   height:"100vh",
@@ -27,7 +27,7 @@ backgroundColor:"#DCDCDC"
 return (
 <Box style={component}>
 {
-  data ? 
+false ? 
   <>
   <AppBar style={loginHeader}>
     <Toolbar>

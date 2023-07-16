@@ -7,7 +7,6 @@ import { AccountContext } from '../context/AccountProvider';
 import {PostUsers } from "../Redux/authAction"
 import { useDispatch, useSelector } from 'react-redux';
 export const LoginDialog = () => {
-  const {setAccount}=useContext(AccountContext)
 const dispatch=useDispatch()
   const loginSucess=(res)=>{
     const decoded=jwt_decoded(res.credential);

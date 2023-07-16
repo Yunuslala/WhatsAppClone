@@ -3,8 +3,7 @@ import {Box,Typography,styled} from '@mui/material'
 import { AccountContext } from '../../context/AccountProvider'
 import { useSelector } from 'react-redux';
 export const Profile = () => {
-    const {account}=useContext(AccountContext)
-    const data=useSelector((state)=>state.userReducer.user)
+    const data=useSelector((state)=>state.userReducer.users)
     console.log("data",data)
     const ImageContainer=styled(Box)`
     display:flex;

@@ -5,7 +5,7 @@ import {
     LOGIN_FAILURE
 } from './authActionType'
 
-const API_URL = "http://localhost:4300/addUser";
+const API_URL = "http://localhost:4500/addUser";
 
 export const PostUsers = (data) => {
   return (dispatch) => {

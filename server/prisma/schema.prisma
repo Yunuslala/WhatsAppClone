@@ -16,5 +16,23 @@ model User {
   name String
   email String @unique
   picture String 
+  About String
+  relations relations[]
 }
 
+
+model relations{
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [reciverId],references: [id])
+  reciverId Int 
+  senderId Int 
+  conversations conversations[]
+}
+
+model conversations{
+  id Int @id @default(autoincrement())
+  conversationsID Int
+  relation relations @relation(fields: [conversationsID],references: [id])
+  text String
+  textId String
+}
