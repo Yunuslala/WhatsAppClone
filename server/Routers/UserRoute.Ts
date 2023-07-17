@@ -58,23 +58,65 @@ UserRouter.post('/chatWithGPT',async(req:Request,res:Response)=>{
 })
 
 
-// UserRouter.post("/createRelations",async(req:Request,res:Response)=>{
-//     try {
-//          const {reciverId,senderID}=req.body;
-//          const postData={
-//             reciverId,
-//             senderID
-//          }
-//          const relations=await prisma.relations.create({
-//             data:postData
-//          })
-//     } catch (error) {
-        
-//     }
-// })
+UserRouter.post("/createRelations", async (req: Request, res: Response) => {
+    try {
+        const { receiverId, senderId } = req.body; // Correct variable names here
+        const postData = {
+            reciverId: receiverId,
+            senderId: senderId,
+            conversations:[],
+            user: {
+                connect: { id: receiverId }, // Connect the relation to the receiver user
+            },
+        };
+
+        const relations = await prisma.relations.create({
+            data: postData
+        });
+
+        // Handle the response or send a success message back to the client
+        res.status(200).json({ message: "Relation created successfully", data: relations });
+    } catch (error) {
+        // Handle errors appropriately
+        res.status(500).json({ error: "An error occurred while creating the relation" });
+    }
+});
 
 
+UserRouter.post("/createConversations", async (req: Request, res: Response) => {
+    try {
+        const { text, textId, conversationsID } = req.body;
 
+        const conversationRelation = await prisma.relations.update({
+            where: {
+                id:conversationsID
+              },
+              data: {
+                conversations:[text,textId]
+              },
+
+        });
+        res.status(200).json({ message: "Conversation created successfully", conversationRelation });
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while creating the conversation" });
+    }
+});
+
+UserRouter.get("/particularConversations/:id",async(req:Request,res:Response)=>{
+    try {
+        let {paramsid}=req.params;
+       const id=+paramsid
+        let conversationObj=await prisma.relations.findFirst({
+            where:{
+                id:id
+            }
+        })
+        const conversation=conversationObj?.conversations
+        res.status(200).send(conversation)
+    } catch (error) {
+        res.status(500).json({ error: "An error occurred while creating the conversation" }); 
+    }
+})
 
 
 export default UserRouter

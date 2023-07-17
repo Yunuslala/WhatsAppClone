@@ -26,13 +26,6 @@ model relations{
   user User @relation(fields: [reciverId],references: [id])
   reciverId Int 
   senderId Int 
-  conversations conversations[]
+  conversations Json
 }
 
-model conversations{
-  id Int @id @default(autoincrement())
-  conversationsID Int
-  relation relations @relation(fields: [conversationsID],references: [id])
-  text String
-  textId String
-}
