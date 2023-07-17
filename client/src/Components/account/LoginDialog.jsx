@@ -4,7 +4,7 @@ import { qrCodeImage } from '../constants/data';
 import { GoogleLogin } from '@react-oauth/google';
 import jwt_decoded from 'jwt-decode'
 import { AccountContext } from '../context/AccountProvider';
-import {PostUsers } from "../Redux/authAction"
+import {PostUsers } from "../Redux/auth/authAction"
 import { useDispatch, useSelector } from 'react-redux';
 export const LoginDialog = () => {
 const dispatch=useDispatch()
@@ -52,7 +52,7 @@ const dispatch=useDispatch()
     fontFamily:'inherit',
     marginBottom:'25px'
   }
-  const styledList= styled(List)`
+  const StyledList= styled(List)`
   & > li {
     padding:0;
     margin-top:15px;
@@ -66,11 +66,11 @@ const dispatch=useDispatch()
     <Box style={BoxStyle}>
     <Box style={ChildBoxStyle}>
     <Typography style={titleStyle}>To use WhatsApp on your computer</Typography>
-    <styledList>
+    <StyledList>
     <ListItem>1. Open WhatsApp on your phone</ListItem>
     <ListItem>2. Tap Menu settings and select WhatsApp Web</ListItem>
     <ListItem>3. Point your phone to this screen to capture the code</ListItem>
-    </styledList>
+    </StyledList>
     </Box>
     <Box style={{position:'relative'}}>
     <QrCodeStyle src={qrCodeImage} alt="qr code" />

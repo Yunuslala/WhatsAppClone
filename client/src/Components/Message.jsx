@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 export const Message = () => {
   console.log("data")
   const data=useSelector((state)=>state.userReducer.user)
-  console.log("data",data)
+  console.log("datauseselector",data)
   const header = { height:'200px',
   backgroundColor:'#00bfa5',
 }
@@ -27,7 +27,7 @@ backgroundColor:"#DCDCDC"
 return (
 <Box style={component}>
 {
-false ? 
+data.id? 
   <>
   <AppBar style={loginHeader}>
     <Toolbar>

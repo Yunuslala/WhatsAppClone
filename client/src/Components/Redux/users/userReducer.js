@@ -2,17 +2,17 @@ import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILURE
-} from './authActionType'
+} from './userActionType'
 
 
 const initialState = {
-    user: [],
+    Alluser: [],
     loading: false,
     error: null,
   };
 
   
-export const userReducer = (state = initialState, action) => {
+export const getuserReducer = (state = initialState, action) => {
     switch (action.type) {
       case LOGIN_REQUEST:
         return {
@@ -21,17 +21,17 @@ export const userReducer = (state = initialState, action) => {
           error: null,
         };
       case  LOGIN_SUCCESS:
-        console.log("loginsucess",action.payload)
+        console.log(action.payload)
         return {
           ...state,
-          user: action.payload,
+          Alluser: action.payload,
           loading: false,
           error: null,
         };
       case LOGIN_FAILURE:
         return {
           ...state,
-          user: [],
+          Alluser: [],
           loading: false,
           error: action.payload,
         };

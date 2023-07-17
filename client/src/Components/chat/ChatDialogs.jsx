@@ -1,7 +1,8 @@
 import React from 'react'
 import {Dialog,Box} from '@mui/material'
 import { Menu} from './menu/Menu'
-import { EmptyChat } from './menu/EmptyChat'
+import { EmptyChat } from './chatBox/EmptyChat'
+import ChatBox from './chatBox/ChatBox'
 export const ChatDialogs = () => {
 
     const  dialogStyle={
@@ -33,7 +34,8 @@ export const ChatDialogs = () => {
         <Menu />
       </Box>
       <Box style={EmptyBoxStyle}>
-        <EmptyChat />
+      <ChatBox />
+        {/* <EmptyChat /> */}
       </Box>
     </Box>
     </Dialog>
