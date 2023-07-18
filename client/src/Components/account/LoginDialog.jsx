@@ -10,7 +10,7 @@ export const LoginDialog = () => {
 const dispatch=useDispatch()
   const loginSucess=(res)=>{
     const decoded=jwt_decoded(res.credential);
-    console.log(decoded)
+
     let obj={
       "name":decoded.name,
       "email":decoded.email,
@@ -18,12 +18,12 @@ const dispatch=useDispatch()
       "About":"Hey there i am using Whatsapp"
     }
     dispatch(PostUsers(obj))
-    console.log("user",obj)
+
     // setAccount(decoded)
   }
 
   const LoginError=(res)=>{
-    console.log('login failed',res)
+   
   }
   const  dialogStyle={
     height:'95%',

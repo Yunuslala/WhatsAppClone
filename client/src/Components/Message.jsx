@@ -1,13 +1,17 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { LoginDialog } from './account/LoginDialog'
 import {AppBar,Toolbar,Box} from '@mui/material';
 import AccountProvider, { AccountContext } from './context/AccountProvider';
 import { ChatDialogs } from './chat/ChatDialogs';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { PostUsers } from './Redux/auth/authAction';
 // import { useSelector } from 'react-redux/es/hooks/useSelector';
 
 export const Message = () => {
-  console.log("data")
+  const dispatch=useDispatch()
+useEffect(()=>{
+  dispatch(PostUsers())
+},[])
   const data=useSelector((state)=>state.userReducer.user)
   console.log("datauseselector",data)
   const header = { height:'200px',

@@ -4,10 +4,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Profile } from './Profile';
 
 
-export const InfoDrawer = ({open,seOpen}) => {
+export const InfoDrawer = ({openDrawer,setOpenDrawer}) => {
 
 const handleClose=()=>{
-  seOpen(false)
+  setOpenDrawer(false)
 }
 const drawerStyle={
   left:20,
@@ -39,13 +39,13 @@ font-size:18px;
 
   return (
     <Drawer
-    open={open}
+    open={openDrawer}
     onClose={handleClose}
     PaperProps={{sx:drawerStyle}}
     style={{zIndex:1500}}
     >
     <HeaderStyle>
-    <ArrowBackIcon onClick={()=>seOpen(false)}/>
+    <ArrowBackIcon onClick={()=>setOpenDrawer(false)}/>
     <TextStyle>Profile</TextStyle>
     </HeaderStyle>
     <ComponentStyle>

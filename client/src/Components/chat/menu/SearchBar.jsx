@@ -1,7 +1,7 @@
 import React from 'react'
 import {Box,InputBase,styled} from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
-export const SearchBar = () => {
+export const SearchBar = ({settext}) => {
     const Component=styled(Box)`
     background:#fff;
     height:45px;
@@ -38,7 +38,9 @@ export const SearchBar = () => {
                 fontSize='small'
             />
         </Icon>
-        <InputField placeholder='Search for new chat'/>
+        <InputField placeholder='Search for new chat'
+          onChange={(e)=>settext(e.target.value)}
+        />
     </Wrapper>
     </Component>
   )

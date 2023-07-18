@@ -8,8 +8,6 @@ import { useSelector } from 'react-redux';
 export const Header = () => {
     const [openDrawer,setOpenDrawer]=useState(false)
     const data=useSelector((state)=>state.userReducer.user)
-    console.log("data",data)
-
     const toggleDrawer=()=>{
         setOpenDrawer(true)
     }
@@ -51,7 +49,7 @@ export const Header = () => {
            />
         </WraperStyle>
     </Box>
-    <InfoDrawer open={openDrawer} seOpen={setOpenDrawer} />
+    <InfoDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
    </>
   )
 }

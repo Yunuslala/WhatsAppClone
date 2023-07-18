@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react'
+import {  useSelector } from 'react-redux';
 import {Box,styled,Divider} from "@mui/material"
 import Conversation from './Conversation';
-import {getUsers} from "../../Redux/users/userAction"
-const Conversations = () => {
-    const [user,setUser]=useState([]);
+import { AccountContext } from '../../context/AccountProvider';
+// import { convertLength } from '@mui/material/styles/cssUtils';
+const Conversations = ({text}) => {
+    const [user,Alluser]=useState([])
 const Component=styled(Box)`
 height:81vh;
 overflow:overlay;
@@ -14,25 +15,42 @@ margin:0 0 0 70px;
 background:#e9edf;
 opacity:.7,
 `
-
-const dispatch=useDispatch()
 useEffect(()=>{
-  dispatch(getUsers())
-},[])
-   const alluser=useSelector((state)=>state.getuserReducer.Alluser);
-//    const allData=()=>{}
-    console.log("alluser",alluser)
+ fetchUser();
+},[text])
+
+const {setexistuser}=useContext(AccountContext)
+let presentUser=useSelector((state)=>state.userReducer.user);
+console.log(presentUser);
+
+const fetchUser=async()=>{
+  try {
+    const response=await fetch('http://localhost:4500/getUser');
+    if(response.ok){
+      const result=await response.json()
+      console.log(result)
+      // return result
+      const filterData=result.Alluser.filter((item)=>item.name.toLowerCase().includes(text.toLowerCase()))
+      Alluser(filterData);
+      setexistuser(result.Alluser)
+    }
+  } catch (error) {
+    
+  }
+}
+console.log(user)
+    
   return (
     <Component>
-    {/* {
-        alluser.map(user=>{
-            <>
+    {
+        user.map((user)=>(
+            user.email!==presentUser.email && <>
             <Conversation user={user}/>
             <StyledDivider />
             </>
             
-        })
-    } */}
+        ))
+    }
 
     </Component>
   )

@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {Dialog,Box} from '@mui/material'
 import { Menu} from './menu/Menu'
 import { EmptyChat } from './chatBox/EmptyChat'
 import ChatBox from './chatBox/ChatBox'
+import { AccountContext } from '../context/AccountProvider'
+
 export const ChatDialogs = () => {
 
     const  dialogStyle={
@@ -24,6 +26,8 @@ export const ChatDialogs = () => {
         height:'100%',
         borderLeft:'1px solid rgba(0,0,0,0.14)'
       }
+      const {relations}=useContext(AccountContext);
+      console.log("relations",relations)
   return (
     <Dialog  open={true}
     PaperProps={{sx:dialogStyle}}
@@ -34,8 +38,7 @@ export const ChatDialogs = () => {
         <Menu />
       </Box>
       <Box style={EmptyBoxStyle}>
-      <ChatBox />
-        {/* <EmptyChat /> */}
+     { Object.keys(relations).length? <ChatBox/> : <EmptyChat /> }
       </Box>
     </Box>
     </Dialog>

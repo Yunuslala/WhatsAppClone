@@ -10,7 +10,7 @@ UserRouter.post('/addUser',async(req:Request,res:Response)=>{
     try {
         const {name,email,picture,About}=req.body;
         const userFindCheck=await prisma.user.findUnique({where:{
-            email
+            email:email
         }})
         console.log(userFindCheck)
         if(userFindCheck){
@@ -60,39 +60,50 @@ UserRouter.post('/chatWithGPT',async(req:Request,res:Response)=>{
 
 UserRouter.post("/createRelations", async (req: Request, res: Response) => {
     try {
-        const { receiverId, senderId } = req.body; // Correct variable names here
+        const { reciverId, senderId } = req.body;
+         // Correct variable names here
+         console.log(req.body)
+         console.log(reciverId,typeof(reciverId),senderId,typeof(reciverId))
+        const availabelRealtions=await prisma.relations.findFirst({
+            where:{
+             reciverId:reciverId,
+             senderId:senderId
+            }
+        })
+        if(availabelRealtions){
+            let relations=availabelRealtions
+            return res.status(200).send({'msg':"relations already exist",relations})
+        }
         const postData = {
-            reciverId: receiverId,
+            reciverId: reciverId,
             senderId: senderId,
             conversations:[],
-            user: {
-                connect: { id: receiverId }, // Connect the relation to the receiver user
-            },
         };
 
         const relations = await prisma.relations.create({
             data: postData
         });
-
+        console.log("relations",relations)
         // Handle the response or send a success message back to the client
-        res.status(200).json({ message: "Relation created successfully", data: relations });
+        res.status(200).json({ message: "Relation created successfully",  relations });
     } catch (error) {
         // Handle errors appropriately
-        res.status(500).json({ error: "An error occurred while creating the relation" });
+        console.log(error)
+        res.status(500).json({ msg: "An error occurred while creating the relation",error });
     }
 });
 
 
 UserRouter.post("/createConversations", async (req: Request, res: Response) => {
     try {
-        const { text, textId, conversationsID } = req.body;
+        const { text, textId, conversationsID,date } = req.body;
 
         const conversationRelation = await prisma.relations.update({
             where: {
                 id:conversationsID
               },
               data: {
-                conversations:[text,textId]
+                conversations:[text,textId,date]
               },
 
         });

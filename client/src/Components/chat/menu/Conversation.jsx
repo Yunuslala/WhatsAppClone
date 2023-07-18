@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {Box,Typography,styled} from '@mui/material'
+import {  useSelector } from 'react-redux'
+import { AccountContext } from '../../context/AccountProvider';
+
 const Conversation = ({user}) => {
 
+const {setrelations}=useContext(AccountContext)
     const Component=styled(Box)`
     display:flex;
     height:45px;
@@ -18,18 +22,37 @@ const Conversation = ({user}) => {
         
     })
 
+    const loguser=useSelector((state)=>state.userReducer.user);
+    console.log("object",loguser)
+    const createRelation=async(user)=>{
+      const obj={
+        senderId:loguser.id,
+        reciverId:user.id
+      }
+      const response=await fetch('http://localhost:4500/createRelations',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj),
+      });
+      if(response.ok){
+        const result=await response.json();
+        console.log(result);
+        setrelations(result.relations)
+      }
 
-
+    }
 
   return (
+    <Component onClick={()=>createRelation(user)}>
     <Box>
-    <Box>
-        <img src={user.picture} alt="dp" />
+        <Image src={user.picture} alt="dp" />
     </Box>
     <Box>
         <Typography>{user.name}</Typography>
     </Box>
-    </Box>
+    </Component>
   )
 }
 

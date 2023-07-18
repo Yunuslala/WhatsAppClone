@@ -17,13 +17,11 @@ model User {
   email String @unique
   picture String 
   About String
-  relations relations[]
 }
 
 
 model relations{
   id Int @id @default(autoincrement())
-  user User @relation(fields: [reciverId],references: [id])
   reciverId Int 
   senderId Int 
   conversations Json

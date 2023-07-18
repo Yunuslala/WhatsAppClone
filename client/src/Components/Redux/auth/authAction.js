@@ -13,7 +13,7 @@ export const PostUsers = (data) => {
     axios
       .post(API_URL,data)
       .then((response) => {
-        console.log("userDataofdispatch",response.data)
+        console.log("userDataofdispatch",response.data.users)
         dispatch(postUserSuccess(response.data.users));
       })
       .catch((error) => {

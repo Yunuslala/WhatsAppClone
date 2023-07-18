@@ -6,7 +6,7 @@ import {
 
 
 const initialState = {
-    user:{},
+    user:[],
     loading: false,
     error: null,
   };
@@ -30,7 +30,7 @@ export const userReducer = (state = initialState, action) => {
       case LOGIN_FAILURE:
         return {
           ...state,
-          user: {},
+          user: [],
           loading: false,
           error: action.payload,
         };

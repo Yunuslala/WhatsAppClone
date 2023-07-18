@@ -3,7 +3,7 @@ import {Box,Typography,styled} from '@mui/material'
 import { useSelector } from 'react-redux';
 export const Profile = () => {
     const data=useSelector((state)=>state.userReducer.user)
-    console.log("data",data)
+
     const ImageContainer=styled(Box)`
     display:flex;
     justify-content:center;
