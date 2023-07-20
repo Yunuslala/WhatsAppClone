@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import {Box,styled} from "@mui/material"
 import Footer from './Footer'
 import { useSelector } from 'react-redux'
+import DisplayMessage from './DisplayMessage'
 
 
 const MessageBox = ({chatheaderUser}) => {
@@ -12,11 +13,15 @@ const Component=styled(Box)`
 height:80vh;
 overflow-y:scroll;
 `
-
+const Container=styled(Box)`
+padding:1px 18px;
+`
   return (
     <Wrapper>
     <Component>
-
+    <Container>
+    <DisplayMessage />
+    </Container>
     </Component>
     <Footer
         chatheaderUser={chatheaderUser}

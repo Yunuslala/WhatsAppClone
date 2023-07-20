@@ -37,7 +37,6 @@ margin-left:auto;
 }
 `
 const profilepicture=chatheaderUser[0].picture ||defaultProfilePicture
-console.log("chatheaderuser",chatheaderUser)
   return (
     <Header>
     <Image src={profilepicture} alt="dp"/>

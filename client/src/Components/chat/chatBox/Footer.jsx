@@ -4,9 +4,9 @@ import { EmojiEmotions, AttachFile, Mic } from '@mui/icons-material';
 import { Box, styled, InputBase } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { AccountContext } from '../../context/AccountProvider';
-
+import {currentDate,currentTime} from "../../constants/dateAndTime"
 // import { uploadFile } from '../../../service/api';
-
+import {getConversations} from "../../service/api"
 const Container = styled(Box)`
     height: 55px;
     background: #ededed;
@@ -43,7 +43,8 @@ const ClipIcon = styled(AttachFile)`
 const Footer = ({chatheaderUser}) => {
   const {relations}=useContext(AccountContext);
   console.log("footerrelations",relations)
-   const [text,settext]=useState("")
+   const [text,settext]=useState("");
+   const [flag,setflag]=useState(false);
    const user=useSelector((state)=>state.userReducer.user);
 const senderID=user.id;
 const receiverId=chatheaderUser[0].id;
@@ -66,19 +67,44 @@ const receiverId=chatheaderUser[0].id;
     //     setValue(e.target.files[0].name);
     //     setFile(e.target.files[0]);
     // }
-    const SendText=(e)=>{
+
+    useEffect(()=>{
+        const getMessage=async()=>{
+            const ans=await getConversations(relations.id);
+            console.log("messagefromdb",ans)
+        }
+        getMessage()
+    },[relations.id,flag])
+    const SendText=async(e)=>{
       if(e.key=="Enter"){
-        let date=new Date();
-        console.log(date.toLocaleTimeString())
-        console.log("helo")
+        const date=currentDate();
+        console.log(date);
+        const time=currentTime();
+        console.log(time)
         console.log(senderID,receiverId,text,"id",relations.id)
         console.log(e.key)
         const obj={
           text:text,
           textId:senderID,
-          conversationsId:relations.id,
-          
+          conversationsID:relations.id,
+          type:"text",
+          date,
+          time,
         }
+        settext("");
+        console.log("objectofcreate conversations",obj)
+        const response=await fetch('http://localhost:4500/createConversations',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(obj),
+          });
+          if(response.ok){
+            const result=await response.json();
+            console.log("conversationsMade",result)
+            setflag((prevstate)=>!prevstate)
+          }
       }
   
     }

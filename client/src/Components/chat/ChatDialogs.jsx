@@ -27,7 +27,7 @@ export const ChatDialogs = () => {
         borderLeft:'1px solid rgba(0,0,0,0.14)'
       }
       const {relations}=useContext(AccountContext);
-      console.log("relations",relations)
+
   return (
     <Dialog  open={true}
     PaperProps={{sx:dialogStyle}}

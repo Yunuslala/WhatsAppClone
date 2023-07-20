@@ -24,6 +24,6 @@ model relations{
   id Int @id @default(autoincrement())
   reciverId Int 
   senderId Int 
-  conversations Json
+  conversations Json[]
 }
 

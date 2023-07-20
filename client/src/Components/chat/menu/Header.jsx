@@ -37,7 +37,6 @@ export const Header = () => {
         width:40,
         borderRadius:'50%'
     })
-    console.log("datapicture",data)
   return (
    <>
     <Box style={BoxComponent}>

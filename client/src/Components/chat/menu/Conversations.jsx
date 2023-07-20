@@ -21,15 +21,14 @@ useEffect(()=>{
 
 const {setexistuser}=useContext(AccountContext)
 let presentUser=useSelector((state)=>state.userReducer.user);
-console.log(presentUser);
 
 const fetchUser=async()=>{
   try {
     const response=await fetch('http://localhost:4500/getUser');
     if(response.ok){
       const result=await response.json()
-      console.log(result)
       // return result
+      console.log("existuser",result)
       const filterData=result.Alluser.filter((item)=>item.name.toLowerCase().includes(text.toLowerCase()))
       Alluser(filterData);
       setexistuser(result.Alluser)
@@ -38,8 +37,7 @@ const fetchUser=async()=>{
     
   }
 }
-console.log(user)
-    
+
   return (
     <Component>
     {

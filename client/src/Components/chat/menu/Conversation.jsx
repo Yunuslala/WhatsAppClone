@@ -23,12 +23,13 @@ const {setrelations}=useContext(AccountContext)
     })
 
     const loguser=useSelector((state)=>state.userReducer.user);
-    console.log("object",loguser)
+  
     const createRelation=async(user)=>{
       const obj={
         senderId:loguser.id,
         reciverId:user.id
       }
+      console.log("relationobj",obj)
       const response=await fetch('http://localhost:4500/createRelations',{
         method: 'POST',
         headers: {
@@ -38,7 +39,7 @@ const {setrelations}=useContext(AccountContext)
       });
       if(response.ok){
         const result=await response.json();
-        console.log(result);
+        console.log("createdrelations",result)
         setrelations(result.relations)
       }
 

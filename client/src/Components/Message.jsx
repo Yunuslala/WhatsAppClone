@@ -13,7 +13,6 @@ useEffect(()=>{
   dispatch(PostUsers())
 },[])
   const data=useSelector((state)=>state.userReducer.user)
-  console.log("datauseselector",data)
   const header = { height:'200px',
   backgroundColor:'#00bfa5',
 }
