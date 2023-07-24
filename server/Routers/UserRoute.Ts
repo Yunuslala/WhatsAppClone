@@ -125,80 +125,122 @@ UserRouter.post("/createRelations", async (req: Request, res: Response) => {
 });
 
 
+// UserRouter.post("/createConversations", async (req: Request, res: Response) => {
+//     try {
+//         const { text, textId, conversationsID, date, type, time } = req.body;
+//         console.log(text, textId, conversationsID, date, type, time);
+//         const existingRelations=await prisma.relations.findUnique({
+//             where:{
+//                 id:conversationsID
+//             }
+//         });
+//         let relations=existingRelations
+//         let existingConversations=existingRelations?.conversations ?? [];
+//         console.log(existingConversations);
+//        console.log(typeof existingConversations) 
+//         const updatedConversations = [
+//             ...existingConversations,
+//             {
+//                 text,
+//                 textId,
+//                 date,
+//                 type,
+//                 time
+//             }
+//         ];
+//         console.log(updatedConversations);
+
+//         // Update the conversation relation with the new conversations array
+//         const conversationRelation = await prisma.relations.update({
+//             where: {
+//                 id: conversationsID
+//             },
+//             data: {
+//                 conversations: updatedConversations
+            
+//             }
+//         });
+
+//         console.log(conversationRelation);
+//         res.status(200).json({ message: "Conversation created successfully", conversationRelation });
+//     //    const conversationRelation = await prisma.relations.upsert({
+//     //     where: { id:conversationsID },
+//     //     create: {
+//     //       id:conversationsID,
+//     //       receiverId:existingRelations?.reciverId,
+//     //       senderId: existingRelations?.senderId,
+//     //       conversations: existingConversations,
+//     //     },
+//     //     update: {
+//     //       conversations: existingConversations,
+//     //     },
+//     //     });
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ error: "An error occurred while creating the conversation" });
+//     }
+// });
+
+
+
+interface ConversationObject {
+    text: string;
+    textId: number;
+    date: string;
+    type: string;
+    time: string;
+  }
+  
+ 
 UserRouter.post("/createConversations", async (req: Request, res: Response) => {
     try {
-        const { text, textId, conversationsID, date, type, time } = req.body;
-        console.log(text, textId, conversationsID, date, type, time);
-
-        // Fetch the existing conversation relation
-        const existingRelation  = await prisma.relations.findFirst({
-            where: {
-                id: conversationsID
-            }
-        });
-        if(existingRelation==null){
-            return res.status(404).send({msg:"relation does not exist check once conversation id"})
-        }
-
-        interface MyResponse {
-            set: Array<{
-              date: string;
-              text: string;
-              time: string;
-              type: string;
-              textId: number;
-            }> | [];
-          }
-
-         
-          
-          // Access the "set" property and use it as needed
-          tput: [{ date: '2023-07-20', text: 'hello', time: '19:18:03', type: 'text', textId: 3 }]          
-          
-          
-          
-          
-          
-          
-        // Extract the existing conversations array or initialize it to an empty array if it doesn't exist
-        const existingConversations:MyResponse | []= existingRelation?.conversations ?? [];
-        console.log("existconversations", existingConversations);
-        const response: MyResponse = existingConversations
-       console.log(ans)
-       const mySet = response.set;
-       console.log(mySet); // Ou
-        // Append the new conversation data to the existing array
-        // const updatedConversations = [
-        //     ...existingConversations,
-        //     {
-        //         text,
-        //         textId,
-        //         date,
-        //         type,
-        //         time
-        //     }
-        // ];
-        // console.log(updatedConversations);
-
-        // Update the conversation relation with the new conversations array
-        // const conversationRelation = await prisma.relations.update({
-        //     where: {
-        //         id: conversationsID
-        //     },
-        //     data: {
-        //         conversations: updatedConversations
-            
-        //     }
-        // });
-
-        // console.log(conversationRelation);
-        // res.status(200).json({ message: "Conversation created successfully", conversationRelation });
+      const { text, textId, conversationsID, date, type, time } = req.body;
+      console.log(text, textId, conversationsID, date, type, time);
+  
+      const existingRelations = await prisma.relations.findUnique({
+        where: {
+          id: conversationsID,
+        },
+      });
+  
+      // If there's no existing data or conversations field is not an array, initialize an empty array for conversations
+      const existingConversations: ConversationObject[] = Array.isArray(existingRelations?.conversations)
+        ? (existingRelations.conversations as Json[]).map(conversation => conversation as ConversationObject)
+        : [];
+  
+      console.log(existingConversations);
+      console.log(typeof existingConversations);
+  
+      const updatedConversations: Json[] = [
+        ...existingConversations,
+        {
+          text,
+          textId,
+          date,
+          type,
+          time,
+        },
+      ];
+  
+      console.log(updatedConversations);
+  
+      // Update the conversation relation with the new conversations array
+      const conversationRelation = await prisma.relations.update({
+        where: {
+          id: conversationsID,
+        },
+        data: {
+          conversations: updatedConversations,
+        },
+      });
+  
+      console.log(conversationRelation);
+      res.status(200).json({ message: "Conversation created successfully", conversationRelation });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "An error occurred while creating the conversation" });
+      console.log(error);
+      res.status(500).json({ error: "An error occurred while creating the conversation" });
     }
-});
-
+  });
 
 UserRouter.get("/particularConversations/:id",async(req:Request,res:Response)=>{
     try {
