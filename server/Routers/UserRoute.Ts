@@ -3,17 +3,18 @@ const UserRouter=express.Router();
 import { PrismaClient, relations } from '@prisma/client';
 import {generateCompletion} from "../helper/gpt"
 const prisma = new PrismaClient();
-import multer from 'multer';
-import cloudinary from '../helper/cloudinaryConfig';
+// import multer from 'multer';
+// import cloudinary from '../helper/cloudinaryConfig';
+import { v2 as cloudinaryV2 } from 'cloudinary';
 import {User,Relation,Conversation} from "../types/interfaces"       
 import { Types } from '@prisma/client/runtime/library';
-// const upload = multer({ dest: 'uploads/' });
+// import {upload} from "../uploads/multer"
+import cloudinary, { CloudinaryStorage } from 'multer-storage-cloudinary';
+import { upload } from '../uploads/multer';
 
-// cloudinary.v2.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",
-//   { public_id: "olympic_flag" }, 
-//   function(error:any, result:any) {console.log(result); });
+import dotenv from 'dotenv';
 
-
+dotenv.config()
 
 
 
@@ -125,117 +126,51 @@ UserRouter.post("/createRelations", async (req: Request, res: Response) => {
 });
 
 
-// UserRouter.post("/createConversations", async (req: Request, res: Response) => {
-//     try {
-//         const { text, textId, conversationsID, date, type, time } = req.body;
-//         console.log(text, textId, conversationsID, date, type, time);
-//         const existingRelations=await prisma.relations.findUnique({
-//             where:{
-//                 id:conversationsID
-//             }
-//         });
-//         let relations=existingRelations
-//         let existingConversations=existingRelations?.conversations ?? [];
-//         console.log(existingConversations);
-//        console.log(typeof existingConversations) 
-//         const updatedConversations = [
-//             ...existingConversations,
-//             {
-//                 text,
-//                 textId,
-//                 date,
-//                 type,
-//                 time
-//             }
-//         ];
-//         console.log(updatedConversations);
 
-//         // Update the conversation relation with the new conversations array
-//         const conversationRelation = await prisma.relations.update({
-//             where: {
-//                 id: conversationsID
-//             },
-//             data: {
-//                 conversations: updatedConversations
-            
-//             }
-//         });
-
-//         console.log(conversationRelation);
-//         res.status(200).json({ message: "Conversation created successfully", conversationRelation });
-//     //    const conversationRelation = await prisma.relations.upsert({
-//     //     where: { id:conversationsID },
-//     //     create: {
-//     //       id:conversationsID,
-//     //       receiverId:existingRelations?.reciverId,
-//     //       senderId: existingRelations?.senderId,
-//     //       conversations: existingConversations,
-//     //     },
-//     //     update: {
-//     //       conversations: existingConversations,
-//     //     },
-//     //     });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ error: "An error occurred while creating the conversation" });
-//     }
-// });
-
-
-
-interface ConversationObject {
-    text: string;
-    textId: number;
-    date: string;
-    type: string;
-    time: string;
-  }
-  
  
 UserRouter.post("/createConversations", async (req: Request, res: Response) => {
+
     try {
-      const { text, textId, conversationsID, date, type, time } = req.body;
-      console.log(text, textId, conversationsID, date, type, time);
-  
-      const existingRelations = await prisma.relations.findUnique({
-        where: {
-          id: conversationsID,
-        },
-      });
-  
-      // If there's no existing data or conversations field is not an array, initialize an empty array for conversations
-      const existingConversations: ConversationObject[] = Array.isArray(existingRelations?.conversations)
-        ? (existingRelations.conversations as Json[]).map(conversation => conversation as ConversationObject)
-        : [];
-  
-      console.log(existingConversations);
-      console.log(typeof existingConversations);
-  
-      const updatedConversations: Json[] = [
-        ...existingConversations,
-        {
-          text,
-          textId,
-          date,
-          type,
-          time,
-        },
-      ];
-  
-      console.log(updatedConversations);
-  
-      // Update the conversation relation with the new conversations array
-      const conversationRelation = await prisma.relations.update({
-        where: {
-          id: conversationsID,
-        },
-        data: {
-          conversations: updatedConversations,
-        },
-      });
-  
-      console.log(conversationRelation);
-      res.status(200).json({ message: "Conversation created successfully", conversationRelation });
+        const { text, textId, conversationsID, date, type, time } = req.body;
+                console.log(text, textId, conversationsID, date, type, time);
+                const existingRelations=await prisma.relations.findUnique({
+                    where:{
+                        id:conversationsID
+                    }
+                });
+                
+                let existingConversations:any=existingRelations?.conversations ?? [];
+                console.log(existingConversations);
+               console.log("existingConversations",typeof existingConversations) 
+               
+
+               existingConversations = existingConversations.filter((conversation: any) => conversation.type!=undefined);
+
+                const updatedConversations = [
+                    ...existingConversations,
+                    {
+                        text,
+                        textId,
+                        date,
+                        type,
+                        time
+                    }
+                ];
+                console.log(updatedConversations);
+        
+                // Update the conversation relation with the new conversations array
+                const conversationRelation = await prisma.relations.update({
+                    where: {
+                        id: conversationsID
+                    },
+                    data: {
+                        conversations: updatedConversations
+                    
+                    }
+                });
+        
+                console.log(conversationRelation);
+                res.status(200).json({ message: "Conversation created successfully", conversationRelation });
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "An error occurred while creating the conversation" });
@@ -258,5 +193,73 @@ UserRouter.get("/particularConversations/:id",async(req:Request,res:Response)=>{
     }
 })
 
+
+
+
+cloudinaryV2.config({
+    cloud_name:process.env.cloudname,
+    api_key:process.env.cloudinary_key,
+    api_secret:process.env.cloudinary_secret,
+  });
+
+
+
+
+UserRouter.post('/post/image/files',upload.single('profile'),async(req:Request,res:Response)=>{
+    // Access the uploaded file info via req.file
+  // The uploaded file is already stored in Cloudinary, and you can use its public URL
+  try{
+    let {textId,conversationsID,date,time,type}=req.body;
+    conversationsID=+conversationsID
+    textId=+textId
+    const existingRelations=await prisma.relations.findUnique({
+        where:{
+            id:conversationsID
+        }
+    });
+    
+     let existingConversations:any=existingRelations?.conversations ?? [];
+      
+    //    existingConversations = existingConversations.filter((conversation: any) => conversation.text!=undefined);
+    const filebuffer=req.file?.buffer
+    const timeStamp=new Date().getTime();
+
+    const uniqueId=Math.floor(Math.random()*100000);
+    const PublicId=`image_${timeStamp}_${uniqueId}`;
+    cloudinaryV2.uploader.upload_stream({
+        public_id:PublicId
+    },
+    async(err,result)=>{
+        if(err){
+            return res.status(500).send({"msg":"error in cloudinary"})
+        }
+             const updatedConversations = [
+            ...existingConversations,
+            {
+                fileurl:result?.url,
+                textId,
+                date,
+                type,
+                time
+            }
+        ];
+        const conversationRelation = await prisma.relations.update({
+                    where: {
+                        id: conversationsID
+                    },
+                    data: {
+                        conversations: updatedConversations
+                    
+                    }
+                });
+                console.log("convers",conversationRelation)
+        res.status(200).json({ message: "Conversation created successfully",conversationRelation });
+    }
+    ).end(filebuffer)
+  } catch (error) {
+console.log(error);
+res.status(500).json({ error: "An error occurred while creating the conversation" });
+}
+})
 
 export default UserRouter

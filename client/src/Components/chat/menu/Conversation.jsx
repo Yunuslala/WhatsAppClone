@@ -29,7 +29,6 @@ const {setrelations}=useContext(AccountContext)
         senderId:loguser.id,
         reciverId:user.id
       }
-      console.log("relationobj",obj)
       const response=await fetch('http://localhost:4500/createRelations',{
         method: 'POST',
         headers: {
@@ -39,7 +38,6 @@ const {setrelations}=useContext(AccountContext)
       });
       if(response.ok){
         const result=await response.json();
-        console.log("createdrelations",result)
         setrelations(result.relations)
       }
 

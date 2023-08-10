@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import {  useSelector } from 'react-redux';
 import {Box,styled,Divider} from "@mui/material"
 import Conversation from './Conversation';
-import { AccountContext } from '../../context/AccountProvider';
+import { AccountContext} from '../../context/AccountProvider';
 // import { convertLength } from '@mui/material/styles/cssUtils';
 const Conversations = ({text}) => {
     const [user,Alluser]=useState([])
@@ -19,8 +19,21 @@ useEffect(()=>{
  fetchUser();
 },[text])
 
-const {setexistuser}=useContext(AccountContext)
+
+
+
+const {setexistuser,socketRef,SetActiveUser}=useContext(AccountContext)
 let presentUser=useSelector((state)=>state.userReducer.user);
+
+useEffect(()=>{
+  socketRef.current.emit("addusers",presentUser);  
+  socketRef.current.on("getActiveUser",(users)=>{
+    console.log("incomingSocketUser",users)
+    SetActiveUser(users)
+  })
+},[presentUser])
+
+
 
 const fetchUser=async()=>{
   try {
