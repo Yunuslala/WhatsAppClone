@@ -11,9 +11,8 @@ import { Types } from '@prisma/client/runtime/library';
 // import {upload} from "../uploads/multer"
 import cloudinary, { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { upload } from '../uploads/multer';
-
 import dotenv from 'dotenv';
-
+import {createConversations,ChatGptHelper} from "../controllers/user.controoler"
 dotenv.config()
 
 
@@ -48,7 +47,14 @@ UserRouter.post('/addUser',async(req:Request,res:Response)=>{
 UserRouter.get('/getUser',async(req:Request,res:Response)=>{
     try {
        
-       const Alluser=await prisma.user.findMany()
+       const Alluser=await prisma.user.findMany(
+       { where:{
+            NOT:{
+                id:4,
+                email:"Chatgpt@gmail.com"
+            }
+        }
+    })
         res.status(200).send({"msg":"all user has been fetched",Alluser})
     } catch (error) {
         console.log("something went wrong",error)
@@ -59,9 +65,12 @@ UserRouter.get('/getUser',async(req:Request,res:Response)=>{
 
 UserRouter.post('/chatWithGPT',async(req:Request,res:Response)=>{
     try {
-       const {input}=req.body
-        const response = await generateCompletion(`${input}`);
-        console.log(response)
+       const {text, textId,reciverId, conversationsID, date, type, time}=req.body
+       const makeConvers=await ChatGptHelper(text, textId,conversationsID, date, type, time);
+       console.log(makeConvers)
+        const response:string | any = await generateCompletion(`${text}`);
+        console.log("responseofgpt",response)
+        const makeConversagain=await ChatGptHelper(response, reciverId,conversationsID, date, type, time)
         res.status(201).send({response})
     } catch (error) {
         console.log("something went wrong",error)
@@ -128,54 +137,7 @@ UserRouter.post("/createRelations", async (req: Request, res: Response) => {
 
 
  
-UserRouter.post("/createConversations", async (req: Request, res: Response) => {
-
-    try {
-        const { text, textId, conversationsID, date, type, time } = req.body;
-                console.log(text, textId, conversationsID, date, type, time);
-                const existingRelations=await prisma.relations.findUnique({
-                    where:{
-                        id:conversationsID
-                    }
-                });
-                
-                let existingConversations:any=existingRelations?.conversations ?? [];
-                console.log(existingConversations);
-               console.log("existingConversations",typeof existingConversations) 
-               
-
-               existingConversations = existingConversations.filter((conversation: any) => conversation.type!=undefined);
-
-                const updatedConversations = [
-                    ...existingConversations,
-                    {
-                        text,
-                        textId,
-                        date,
-                        type,
-                        time
-                    }
-                ];
-                console.log(updatedConversations);
-        
-                // Update the conversation relation with the new conversations array
-                const conversationRelation = await prisma.relations.update({
-                    where: {
-                        id: conversationsID
-                    },
-                    data: {
-                        conversations: updatedConversations
-                    
-                    }
-                });
-        
-                console.log(conversationRelation);
-                res.status(200).json({ message: "Conversation created successfully", conversationRelation });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "An error occurred while creating the conversation" });
-    }
-  });
+UserRouter.post("/createConversations",createConversations);
 
 UserRouter.get("/particularConversations/:id",async(req:Request,res:Response)=>{
     try {
@@ -223,8 +185,8 @@ UserRouter.post('/post/image/files',upload.single('profile'),async(req:Request,r
     //    existingConversations = existingConversations.filter((conversation: any) => conversation.text!=undefined);
     const filebuffer=req.file?.buffer
     const timeStamp=new Date().getTime();
-
     const uniqueId=Math.floor(Math.random()*100000);
+    
     const PublicId=`image_${timeStamp}_${uniqueId}`;
     cloudinaryV2.uploader.upload_stream({
         public_id:PublicId

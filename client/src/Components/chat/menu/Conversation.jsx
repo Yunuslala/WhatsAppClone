@@ -4,7 +4,7 @@ import {  useSelector } from 'react-redux'
 import { AccountContext } from '../../context/AccountProvider';
 
 const Conversation = ({user}) => {
-
+console.log("object of users",user)
 const {setrelations}=useContext(AccountContext)
     const Component=styled(Box)`
     display:flex;
@@ -25,6 +25,7 @@ const {setrelations}=useContext(AccountContext)
     const loguser=useSelector((state)=>state.userReducer.user);
   
     const createRelation=async(user)=>{
+      
       const obj={
         senderId:loguser.id,
         reciverId:user.id
@@ -44,7 +45,8 @@ const {setrelations}=useContext(AccountContext)
     }
 
   return (
-    <Component onClick={()=>createRelation(user)}>
+    <>
+  <Component onClick={()=>createRelation(user)}>
     <Box>
         <Image src={user.picture} alt="dp" />
     </Box>
@@ -52,6 +54,8 @@ const {setrelations}=useContext(AccountContext)
         <Typography>{user.name}</Typography>
     </Box>
     </Component>
+    </>
+  
   )
 }
 

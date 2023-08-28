@@ -16,8 +16,10 @@ const AccountProvider=({children})=>{
        
 
         useEffect(() => {
-          socketRef.current = io('ws://localhost:9000');
-
+          socketRef.current = io('ws://localhost:9005');
+          socketRef.current.on("getMessage",(data)=>{
+            console.log("socketrefrence",data);
+          })
         }, []);
  
     return(

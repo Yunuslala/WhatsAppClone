@@ -38,13 +38,14 @@ margin-left:auto;
 }
 `
 const {activeUser}=useContext(AccountContext)
+console.log("chatheaderUser",chatheaderUser);
 const profilepicture=chatheaderUser[0].picture ||defaultProfilePicture
   return (
     <Header>
     <Image src={profilepicture} alt="dp"/>
       <Box>
         <Name>{chatheaderUser[0].name}</Name>
-        <Status>{activeUser?.find(user=>user.id===chatheaderUser[0].id)? 'Online' :'offline'}</Status>
+        <Status>{activeUser?.find(user=>user.id===chatheaderUser[0].id || chatheaderUser[0].name=="Chat-Gpt")? 'Online' :'offline'}</Status>
       </Box>
       <RightContainer>
         <SearchIcon />

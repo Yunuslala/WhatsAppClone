@@ -28,18 +28,19 @@ io.on("connection", (socket: Socket) => {
     socket.on("addusers",(user:any)=>{
         addactiveuser(user,socket.id);
         console.log(socket.id)
-        console.log(users)
+        console.log("usersall",users)
         io.emit("getActiveUser",users)
     });
     socket.on("sendMessage",(data:any)=>{
         console.log("recivedMessages",data)
-        const user=getUser(data.textId);
-        console.log("getuser",user)
+        const user=getUser(data.receiverId);
+        console.log("getuser",user.socketId);
+        console.log("usertorecive",user)
         io.to(user.socketId).emit("getMessage",data)
     })
 });
 console.log(users)
-const PORT = 9000;
+const PORT = 9005;
 server.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });

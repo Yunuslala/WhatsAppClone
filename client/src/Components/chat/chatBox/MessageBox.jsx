@@ -49,19 +49,27 @@ const MessageBox = ({ chatheaderUser }) => {
 
 
       useEffect(()=>{
+        console.log(socketRef.current._callbacks.$getMessage);
         socketRef.current.on('getMessage',(data)=>{
           console.log("messagefromsocket",data)
           setIncomingCurMessage(data)
         })
-      },[incomingCurMessage])
+      },[incomingCurMessage,flag])
 
 
 
       useEffect(()=>{
-        console.log("incomingCurMessage",incomingCurMessage)
-        incomingCurMessage && conversations?.members?.includes(incomingCurMessage.textId) && 
-        setconversations((prev) => [...prev, incomingCurMessage]);
-      },[incomingCurMessage,conversations])
+        console.log("incomingCurMessage",incomingCurMessage);
+        console.log("coversations",conversations?.members?.includes(incomingCurMessage.textId));
+        if (
+          incomingCurMessage &&
+          conversations.some(item => item.textId === incomingCurMessage.textId)
+        ) {
+          const updatedConversations = [...conversations, incomingCurMessage];
+          setconversations(updatedConversations);
+        }
+       
+      },[incomingCurMessage])
 
 
 
@@ -70,7 +78,7 @@ const MessageBox = ({ chatheaderUser }) => {
 
     const time = currentTime();
     console.log(senderID, receiverId, text, "id", relations.id);
-    const obj = {
+    let obj = {
       text: text,
       textId: senderID,
       conversationsID: relations.id,
@@ -79,22 +87,44 @@ const MessageBox = ({ chatheaderUser }) => {
       time,
     };
 
-    socketRef.current.emit("sendMessage",{...obj,receiverId})
     settext("");
-    const response = await fetch(
-      "http://localhost:4500/createConversations",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(obj),
+    if(receiverId==4){
+      console.log("object",obj)
+      obj={receiverId,...obj};
+      console.log("objectchatgpt",obj)
+      const response = await fetch(
+        "http://localhost:4500/chatWithGPT",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(obj),
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setflag((prevstate) => !prevstate);
       }
-    );
-    if (response.ok) {
-      const result = await response.json();
-      setflag((prevstate) => !prevstate);
     }
+    else{
+      socketRef.current.emit("sendMessage",{...obj,receiverId})
+      const response = await fetch(
+        "http://localhost:4500/createConversations",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(obj),
+        }
+      );
+      if (response.ok) {
+        const result = await response.json();
+        setflag((prevstate) => !prevstate);
+      }
+    }
+   
   }
 
   useEffect(() => {
